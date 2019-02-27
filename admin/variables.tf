@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-resource "google_service_account" "mariadb" {
-  project      = "${var.project}"
-  account_id   = "${var.service_account}"
-  display_name = "${var.service_account}"
-}
-
-resource "google_project_iam_member" "mariadb_logs" {
-  project = "${var.project}"
-  role    = "roles/logging.logWriter"
-  member  = "serviceAccount:${google_service_account.mariadb.email}"
-}
-
-resource "google_project_iam_member" "mariadb_metrics" {
-  project = "${var.project}"
-  role    = "roles/monitoring.metricWriter"
-  member  = "serviceAccount:${google_service_account.mariadb.email}"
-}
+variable "project" { default = "" }
+variable "bucket_region" { default = "" }
+variable "xpn_project" { default = "" }
+variable "network" { default = "" }
+variable "subnetwork" { default = "" }
+variable "service_account" { default = "" }
+variable "config_bucket" { default = "" }
+variable "client_ip_range" { default = "10.0.0.0/8" }
+variable "health_check" { default = "mariadb" }
