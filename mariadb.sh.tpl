@@ -30,10 +30,29 @@ apt install -y mariadb-server mariadb-client galera-3 galera-arbitrator-3
 service mariadb-server stop
 
 cat <<EOF > /etc/mariadb/mariadb.conf
-${mariadb0}
-${mariadb1}
-${pass}
+[mysqld]
+binlog_format=ROW
+default-storage-engine=innodb
+innodb_autoinc_lock_mode=2
+query_cache_size=0
+query_cache_type=0
+innodb_flush_log_at_trx_commit=0
+innodb_buffer_pool_size=256M
+bind-address={{localip}}
+
+#Galera settings
+wsrep_provider="/usr/lib/galera/libgalera_smm.so"
+#SSL for Galera
+wsrep_provider_options="socket.ssl_key=/etc/mysql/ssl/server-key.pem;socket.ssl_cert=/etc/mysql/ssl/server-cert.pem;socket.ssl_ca=/etc/mysql/ssl/ca-cert.pem"
+wsrep_cluster_name="mycluster"
+wsrep_cluster_address="gcomm://${mariadb0},${mariadb1}"
+wsrep_sst_method=rsync
+wsrep_on=ON
+wsrep_node_address="arbitrator"
+wsrep_node_name="{{node_name}}"
 EOF
+
+sed -i -e "s|{{node_name}}|$HOSTNAME|" -e "s|{{localip}}|0.0.0.0|" /etc/mariadb/mariadb.conf
 
 
 cat <<EOF > /etc/logrotate.d/mariadb
