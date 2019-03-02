@@ -5,17 +5,38 @@ This Terraform template makes it easy to launch a High-Availability MariaDB clus
 
 ## Usage
 
-### Deploy MariaDB HA Cluster
+The `admin`, `health_check` and `main` modules can be run separately using `-target` argument.
+
+You should only need to run `admin` and `health_check` once.
+To create multiple clusters, edit `cluster_name` in `terraform.tfvars` and apply the `main` module.
+
+### Admin Module: Create GCS Bucket and Service Account
 
 ```
-terraform plan
-terraform apply
+terraform plan -target=module.admin
+terraform apply -target=module.admin
 ```
+
+
+### Health Check Module: Create Health Check 
+
+```
+terraform plan -target=module.main
+terraform apply -target=module.main
+```
+
+### Main Module: Create MariaDB Cluster
+
+```
+terraform plan -target=module.main
+terraform apply -target=module.main
+```
+
 
 ### Deprovision MariaDB HA Cluster
 
 ```
-terraform destroy
+terraform destroy -target=module.main
 ```
 
 
@@ -43,15 +64,19 @@ terraform init
 ## File structure
 The project has the following folders and files:
 
-- /config.tf: Creates a Cloud Storage bucket and uploads a startup script
-- /firewall.tf: Creates firewall rules to allow healthcheck, communication within the cluster, and clients on the private network.
-- /main.tf: Creates Instance templates and Managed Instance Groups
-- /network.tf: Creates Static Private IP and TCP Healthcheck
-- /README.md: this file
-- /mariadb.sh.tpl: Template for startup script that installs and configures MariaDB
-- /service_account.tf: Creates service account and grants permission to write StackDriver Logging and Metrics
-- /startup.sh.tpl: Startup script that fetches MariaDB startup script
-- /variables.tf: Variables - Edit this file before running apply.
+- [admin/main.tf](admin/main.tf): Creates a Cloud Storage bucket, service account and firewall rules
+- [admin/variables.tf](admin/variables.tf): Defines variable types and defaults for admin module
+- [health_check/main.tf](health_check/main.tf): Creates healthcheck
+- [health_check/variables.tf](health_check/variables.tf): Defines variable types and defaults for health_check module
+- [main/main.tf](main/main.tf): Creates startup script, Instance templates and Managed Instance Groups
+- [main/variables.tf](main/variables.tf): Defines variable types and defaults for main module
+- [main/scripts/mariadb.sh.tpl](main/scripts/mariadb.sh.tpl): Template for script that installs and configures MariaDB
+- [main/scripts/startup.sh.tpl](main/scripts/startup.sh.tpl): Startup script that fetches MariaDB script
+- LICENSE: Apache License 2.0
+- [main.tf](main.tf): Loads variables and calls modules
+- README.md: this file
+- [terraform.tfvars](terraform.tfvars): Variables - Edit this file and set variable values before running terraform apply.
+- [variables.tf](variables.tf): Defines variable types and defaults
 
 
 ## License

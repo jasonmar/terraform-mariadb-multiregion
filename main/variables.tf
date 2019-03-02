@@ -23,10 +23,12 @@ variable "config_bucket" { default = "" }
 variable "instance_type" { default = "" }
 variable "client_ip_range" { default = "10.0.0.0/8" }
 variable "pass" { default = "" }
+variable "replpass" { default = "" }
 variable "instance_count" { default = "" }
 variable "disk_size_gb" { default = 256 }
 variable "disk_type" { default = "pd-standard" }
 variable "health_check" { default = "mariadb" }
+variable "databases" { default = "testdb" }
 
 # Map Variables with one record per instance
 variable "region" { default = {} }

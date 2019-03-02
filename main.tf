@@ -15,22 +15,21 @@
  */
 
 provider "google-beta" {
-  # https://github.com/terraform-providers/terraform-provider-google-beta/blob/master/google-beta/
-  //credentials = "${file("sa-retail.json")}"
   project = "${var.project}"
-  region  = "${lookup(var.region, "0")}"
   version = ">= 2.1.0, <= 2.2.0"
 }
 
 module "main" {
-  source            = "modules/"
+  source            = "main/"
   cluster_name      = "${var.cluster_name}"
+  databases         = "${var.databases}"
   project           = "${var.project}"
   region            = "${var.region}"
   zone              = "${var.zone}" 
   xpn_project       = "${var.xpn_project}"
   network           = "${var.network}"
   subnetwork        = "${var.subnetwork}"
+  health_check      = "${var.health_check}"
   service_account   = "${var.service_account}"
   config_bucket     = "${var.config_bucket}"
   instance_type     = "${var.instance_type}"
@@ -38,7 +37,8 @@ module "main" {
   disk_type         = "${var.disk_type}"
   client_ip_range   = "${var.client_ip_range}"
   pass              = "${var.pass}"
-  instance_count    = 2
+  replpass          = "${var.replpass}"
+  instance_count    = "${var.instance_count}"
 }
 
 module "admin" {
@@ -50,4 +50,10 @@ module "admin" {
   service_account   = "${var.service_account}"
   config_bucket     = "${var.config_bucket}"
   client_ip_range   = "${var.client_ip_range}"
+}
+
+module "health_check" {
+  source       = "health_check/"
+  project      = "${var.project}"
+  health_check = "${var.health_check}"
 }

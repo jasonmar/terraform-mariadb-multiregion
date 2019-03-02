@@ -18,24 +18,16 @@ locals {
   runid = "${substr(uuid(),0,4)}"
 }
 
-
 data "google_compute_network" "default" {
   project = "${var.xpn_project}"
   name    = "${var.network}"
-}
-
-data "google_compute_subnetwork" "subnetwork" {
-  count        = "${var.instance_count}"
-  project      = "${var.xpn_project}"
-  region       = "${lookup(var.region, count.index)}"
-  name         = "${lookup(var.subnetwork, count.index)}"
 }
 
 resource "google_compute_address" "mariadb" {
   count        = "${var.instance_count}"
   project      = "${var.project}"
   name         = "${format("mariadb-${var.cluster_name}-%03d", count.index)}"
-  subnetwork   = "${data.google_compute_subnetwork.subnetwork.*.self_link[count.index]}"
+  subnetwork   = "projects/${var.xpn_project}/regions/${lookup(var.region, count.index)}/subnetworks/${lookup(var.subnetwork, count.index)}"
   address_type = "INTERNAL"
   region       = "${lookup(var.region, count.index)}"
 }
@@ -43,15 +35,21 @@ resource "google_compute_address" "mariadb" {
 data "template_file" "config" {
   template = "${file("${path.module}/scripts/mariadb.sh.tpl")}"
   vars = {
+    idx = "${count.index}"
     mariadb0 = "${google_compute_address.mariadb.*.address[count.index]}"
     mariadb1 = "${google_compute_address.mariadb.*.address[count.index+1]}"
     pass = "${var.pass}"
+    replpass = "${var.replpass}"
     config_bucket = "${var.config_bucket}"
+    cluster_name = "${var.cluster_name}"
+    service_account = "${var.service_account}"
+    project_name = "${var.project}"
+    databases = "${var.databases}"
   }
 }
 
 resource "google_storage_bucket_object" "config" {
-  name    = "mariadb_${local.runid}.sh"
+  name    = "${var.cluster_name}/mariadb_${local.runid}.sh"
   content = "${data.template_file.config.rendered}"
   bucket  = "${var.config_bucket}"
 }
@@ -85,7 +83,7 @@ resource "google_compute_instance_template" "mariadb" {
     type         = "${var.disk_type}"
   }
   network_interface {
-    subnetwork         = "${data.google_compute_subnetwork.subnetwork.*.self_link[count.index]}"
+    subnetwork = "projects/${var.xpn_project}/regions/${lookup(var.region, count.index)}/subnetworks/${lookup(var.subnetwork, count.index)}"
     network_ip = "${google_compute_address.mariadb.*.address[count.index]}"
   }
   service_account {

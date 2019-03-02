@@ -32,44 +32,26 @@ resource "google_project_iam_member" "metrics" {
   member  = "serviceAccount:${google_service_account.default.email}"
 }
 
-resource "google_compute_health_check" "default" {
-  project             = "${var.project}"
-  name                = "${var.health_check}"
-  timeout_sec         = 2
-  check_interval_sec  = 8
-  healthy_threshold   = 1
-  unhealthy_threshold = 3
-
-  tcp_health_check {
-    port = "3306"
-  }
-}
-
 resource "google_compute_firewall" "healthcheck" {
   project = "${var.xpn_project}"
   name    = "mariadb-healthcheck"
   network = "${var.network}"
-
   allow {
     protocol = "tcp"
     ports    = ["3306"]
   }
-
   source_ranges  = ["35.191.0.0/16","130.211.0.0/22"]
   target_service_accounts = ["${google_service_account.default.email}"]
 }
-
 
 resource "google_compute_firewall" "client" {
   project = "${var.xpn_project}"
   name    = "mariadb-client"
   network = "${var.network}"
-
   allow {
     protocol = "tcp"
     ports    = ["3306"]
   }
-
   source_ranges  = ["${var.client_ip_range}"]
   target_service_accounts = ["${google_service_account.default.email}"]
 }
@@ -78,12 +60,10 @@ resource "google_compute_firewall" "cluster" {
   project = "${var.xpn_project}"
   name    = "mariadb-cluster"
   network = "${var.network}"
-
   allow {
     protocol = "tcp"
     ports    = ["3306"]
   }
-
   source_service_accounts = ["${google_service_account.default.email}"]
   target_service_accounts = ["${google_service_account.default.email}"]
 }
@@ -96,13 +76,13 @@ resource "google_storage_bucket" "config" {
 }
 
 resource "google_storage_bucket_iam_binding" "config" {
-  bucket      = "${google_storage_bucket.config.name}"
-  role        = "roles/storage.objectViewer"
+  bucket  = "${google_storage_bucket.config.name}"
+  role    = "roles/storage.objectViewer"
   members = ["serviceAccount:${google_service_account.default.email}"]
 }
 
 resource "google_storage_bucket_iam_binding" "bucket_storage" {
-  bucket      = "${google_storage_bucket.config.name}"
-  role        = "roles/storage.objectCreator"
+  bucket  = "${google_storage_bucket.config.name}"
+  role    = "roles/storage.objectCreator"
   members = ["serviceAccount:${google_service_account.default.email}"]
 }
