@@ -15,11 +15,15 @@
  */
 
 variable "cluster_name" { default = "" }
-variable "instance_count" { default = 2 }
+variable "instance_count" { default = 3 }
 variable "project" { default = "" }
-variable "bucket_region" { default = "us-east1" }
+variable "bucket_region" { default = "" }
 variable "region" { default = {} }
 variable "zone" { default = {} }
+variable "garb_instance_type" { default = "" }
+variable "garb_zone" { default = "" }
+variable "garb_region" { default = "" }
+variable "garb_subnetwork" { default = "" }
 variable "xpn_project" { default = "" }
 variable "network" { default = "" }
 variable "subnetwork" { default = {} }
@@ -29,7 +33,9 @@ variable "instance_type" { default = "" }
 variable "client_ip_range" { default = "" }
 variable "pass" { default = "" }
 variable "replpass" { default = "" }
+variable "statspass" { default = "" }
 variable "disk_size_gb" { default = 256 }
-variable "disk_type" { default = "pd-standard" }
+variable "disk_type" { default = "" }
 variable "health_check" { default = "" }
 variable "databases" { default = "" }
+variable "template_version" { default = "" }

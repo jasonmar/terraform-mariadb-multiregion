@@ -34,7 +34,7 @@ resource "google_project_iam_member" "metrics" {
 
 resource "google_compute_firewall" "healthcheck" {
   project = "${var.xpn_project}"
-  name    = "mariadb-healthcheck"
+  name    = "mariadb-healthcheck-${var.service_account}"
   network = "${var.network}"
   allow {
     protocol = "tcp"
@@ -46,7 +46,7 @@ resource "google_compute_firewall" "healthcheck" {
 
 resource "google_compute_firewall" "client" {
   project = "${var.xpn_project}"
-  name    = "mariadb-client"
+  name    = "mariadb-client-${var.service_account}"
   network = "${var.network}"
   allow {
     protocol = "tcp"
@@ -58,11 +58,11 @@ resource "google_compute_firewall" "client" {
 
 resource "google_compute_firewall" "cluster" {
   project = "${var.xpn_project}"
-  name    = "mariadb-cluster"
+  name    = "mariadb-cluster-${var.service_account}"
   network = "${var.network}"
   allow {
     protocol = "tcp"
-    ports    = ["3306"]
+    ports    = ["3306","4567","4444"]
   }
   source_service_accounts = ["${google_service_account.default.email}"]
   target_service_accounts = ["${google_service_account.default.email}"]
@@ -71,18 +71,12 @@ resource "google_compute_firewall" "cluster" {
 resource "google_storage_bucket" "config" {
   project       = "${var.project}"
   name          = "${var.config_bucket}"
-  storage_class = "REGIONAL"
+  storage_class = "MULTI_REGIONAL"
   location      = "${var.bucket_region}"
 }
 
 resource "google_storage_bucket_iam_binding" "config" {
   bucket  = "${google_storage_bucket.config.name}"
   role    = "roles/storage.objectViewer"
-  members = ["serviceAccount:${google_service_account.default.email}"]
-}
-
-resource "google_storage_bucket_iam_binding" "bucket_storage" {
-  bucket  = "${google_storage_bucket.config.name}"
-  role    = "roles/storage.objectCreator"
   members = ["serviceAccount:${google_service_account.default.email}"]
 }

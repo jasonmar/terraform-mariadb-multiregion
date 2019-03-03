@@ -21,5 +21,5 @@ variable "network" { default = "" }
 variable "subnetwork" { default = "" }
 variable "service_account" { default = "" }
 variable "config_bucket" { default = "" }
-variable "client_ip_range" { default = "10.0.0.0/8" }
-variable "health_check" { default = "mariadb" }
+variable "client_ip_range" { default = "" }
+variable "health_check" { default = "" }

@@ -19,28 +19,6 @@ provider "google-beta" {
   version = ">= 2.1.0, <= 2.2.0"
 }
 
-module "main" {
-  source            = "main/"
-  cluster_name      = "${var.cluster_name}"
-  databases         = "${var.databases}"
-  project           = "${var.project}"
-  region            = "${var.region}"
-  zone              = "${var.zone}" 
-  xpn_project       = "${var.xpn_project}"
-  network           = "${var.network}"
-  subnetwork        = "${var.subnetwork}"
-  health_check      = "${var.health_check}"
-  service_account   = "${var.service_account}"
-  config_bucket     = "${var.config_bucket}"
-  instance_type     = "${var.instance_type}"
-  disk_size_gb      = "${var.disk_size_gb}"
-  disk_type         = "${var.disk_type}"
-  client_ip_range   = "${var.client_ip_range}"
-  pass              = "${var.pass}"
-  replpass          = "${var.replpass}"
-  instance_count    = "${var.instance_count}"
-}
-
 module "admin" {
   source            = "admin/"
   project           = "${var.project}"
@@ -56,4 +34,31 @@ module "health_check" {
   source       = "health_check/"
   project      = "${var.project}"
   health_check = "${var.health_check}"
+}
+
+module "main" {
+  source             = "main/"
+  cluster_name       = "${var.cluster_name}"
+  databases          = "${var.databases}"
+  project            = "${var.project}"
+  region             = "${var.region}"
+  zone               = "${var.zone}"
+  garb_zone          = "${var.garb_zone}" 
+  garb_instance_type = "${var.instance_type}"
+  garb_region        = "${var.garb_region}"
+  garb_subnetwork    = "${var.garb_subnetwork}"
+  xpn_project        = "${var.xpn_project}"
+  subnetwork         = "${var.subnetwork}"
+  health_check       = "${var.health_check}"
+  service_account    = "${var.service_account}"
+  config_bucket      = "${var.config_bucket}"
+  instance_type      = "${var.instance_type}"
+  disk_size_gb       = "${var.disk_size_gb}"
+  disk_type          = "${var.disk_type}"
+  client_ip_range    = "${var.client_ip_range}"
+  pass               = "${var.pass}"
+  statspass          = "${var.statspass}"
+  replpass           = "${var.replpass}"
+  instance_count     = "${var.instance_count}"
+  template_version   = "${var.template_version}"
 }

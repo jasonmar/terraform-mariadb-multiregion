@@ -15,4 +15,4 @@
  */
 
 variable "project" { default = "" }
-variable "health_check" { default = "mariadb" }
+variable "health_check" { default = "" }

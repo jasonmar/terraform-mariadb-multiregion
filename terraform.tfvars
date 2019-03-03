@@ -1,31 +1,40 @@
-project         = "myproject"
-xpn_project     = "myproject"
-network         = "default"
-
-service_account = "mariadb"
-config_bucket   = "mariadb_config"
-health_check    = "mariadb"
-instance_type   = "n1-standard-2"
-disk_size_gb    = 128
-disk_type       = "pd-standard"
-
-cluster_name    = "c0"
-databases       = "testdb airflow hive" # space separated
-pass            = "changeit"
-replpass        = "changeit"
-client_ip_range = "10.0.0.0/8"
-
-# region, zone, subnetwork are maps of size instance_count
-instance_count  = 2
+project            = "myproject"
+xpn_project        = "myproject"
+network            = "default"
+service_account    = "mariadb"
+config_bucket      = "mariadb_config"
+bucket_region      = "US"
+health_check       = "mariadb"
+instance_type      = "n1-standard-4"
+disk_size_gb       = 256
+disk_type          = "pd-ssd"
+cluster_name       = "c0"
+databases          = "airflow hive"
+pass               = "changeit"
+replpass           = "changeit"
+statspass          = "changeit"
+client_ip_range    = "10.0.0.0/8"
+garb_instance_type = "n1-standard-2"
+garb_zone          = "us-east1-b"
+garb_region        = "us-east1"
+garb_subnetwork    = "default"
+template_version   = "v1"
+instance_count     = 4
 region = {
   "0" = "us-east1"
   "1" = "us-east1"
+  "2" = "us-east1"
+  "3" = "us-east1"
 }
 zone = {
   "0" = "us-east1-b"
   "1" = "us-east1-b"
+  "2" = "us-east1-b"
+  "3" = "us-east1-b"
 }
 subnetwork = {
-  "0" = "data"
-  "1" = "data"
+  "0" = "default"
+  "1" = "default"
+  "2" = "default"
+  "3" = "default"
 }

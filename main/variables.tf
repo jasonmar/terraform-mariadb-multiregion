@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-variable "cluster_name" { default = "cluster1" }
+variable "cluster_name" { default = "" }
 variable "project" { default = "" }
 variable "xpn_project" { default = "" }
-variable "network" { default = "" }
 variable "service_account" { default = "" }
 variable "config_bucket" { default = "" }
 variable "instance_type" { default = "" }
-variable "client_ip_range" { default = "10.0.0.0/8" }
+variable "client_ip_range" { default = "" }
 variable "pass" { default = "" }
 variable "replpass" { default = "" }
+variable "statspass" { default = "" }
 variable "instance_count" { default = "" }
 variable "disk_size_gb" { default = 256 }
-variable "disk_type" { default = "pd-standard" }
-variable "health_check" { default = "mariadb" }
-variable "databases" { default = "testdb" }
+variable "disk_type" { default = "" }
+variable "health_check" { default = "" }
+variable "databases" { default = "" }
+variable "template_version" { default = "" }
+variable "garb_instance_type" { default = "" }
+variable "garb_zone" { default = "" }
+variable "garb_region" { default = "" }
+variable "garb_subnetwork" { default = "" }
 
 # Map Variables with one record per instance
 variable "region" { default = {} }
