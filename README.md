@@ -20,6 +20,15 @@ cd main/ssl
 ./genkeys.sh
 ```
 
+### Project Setup
+
+You will need to enable the APIs used by terraform.
+
+```sh
+for svc in compute iam storage-api; do
+  gcloud services enable $svc.googleapis.com
+done
+```
 
 ### Admin Module: Create GCS Bucket and Service Account
 

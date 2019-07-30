@@ -27,6 +27,7 @@ cluster_members=$(curl -f -s -H Metadata-Flavor:Google $METADATA_ROOT/cluster-me
 databases=$(curl -f -s -H Metadata-Flavor:Google $METADATA_ROOT/databases)
 
 gcs_root="gs://$config_bucket/$cluster_name"
+allow_bootstrap=$(gsutil ls $gcs_root/allow_bootstrap; echo $?)
 collectd_conf="/opt/stackdriver/collectd/etc/collectd.d/mysql.conf"
 ssl_dir="/etc/mysql/ssl"
 let offset=1+$id
@@ -98,7 +99,7 @@ e=$(service mysql start >/dev/null 2>&1; echo $?)
 
 # galera_new_cluster
 if [ "$e" != "0" ]; then  
-  if [ "$id" == "0" ]; then
+  if [ "$allow_bootstrap" == "0" ] && [ "$id" == "0" ]; then
     service mysql stop
     systemctl set-environment _WSREP_NEW_CLUSTER='--wsrep-new-cluster'
     service mysql start

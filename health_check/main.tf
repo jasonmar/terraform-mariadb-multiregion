@@ -17,10 +17,10 @@
 resource "google_compute_health_check" "default" {
   project             = "${var.project}"
   name                = "${var.health_check}"
-  timeout_sec         = 2
-  check_interval_sec  = 8
+  timeout_sec         = 30
+  check_interval_sec  = 60
   healthy_threshold   = 1
-  unhealthy_threshold = 3
+  unhealthy_threshold = 4
 
   tcp_health_check {
     port = "3306"
