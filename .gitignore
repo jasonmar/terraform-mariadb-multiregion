@@ -1,5 +1,6 @@
-*.tfstate
-*.backup
-.terraform*
-*.pem
-*.crt
+**/*.tfstate
+**/*.backup
+.terraform/
+**/*.pem
+**/*.crt
+**/*.log

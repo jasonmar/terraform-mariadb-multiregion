@@ -47,7 +47,7 @@ chmod 777 "$log_dir"
 cat <<EOF > /etc/default/garb
 GALERA_NODES="$cluster_members"
 LOG_FILE="$log_dir/garbd.log"
-GALERA_GROUP="c0"
+GALERA_GROUP="$cluster_name"
 GALERA_OPTIONS="socket.ssl_cert=$ssl_dir/garb.crt;socket.ssl_key=$ssl_dir/garb.pem;socket.ssl_ca=$ssl_dir/ca.crt;socket.ssl_cipher=AES128-SHA256"
 EOF
 

@@ -1,6 +1,6 @@
 # Google Cloud MariaDB HA Cluster Terraform Template
 
-This Terraform template makes it easy to launch a High-Availability MariaDB cluster.
+This Terraform template deploys a MariaDB cluster with Galera Multi-Master Replication for High Availability.
 
 
 ## Usage
@@ -9,6 +9,15 @@ The `admin`, `health_check` and `main` modules can be run separately using `-tar
 
 You should only need to run `admin` and `health_check` once.
 To create multiple clusters, edit `cluster_name` in `terraform.tfvars` and apply the `main` module.
+
+On the initial boostrapping of the cluster, you will need to create a file in your GCS bucket named `gs://$config_bucket/$cluster_name/allow_bootstrap`. The presence of this file is checked by [mariadb.sh](main/scripts/mariadb.sh.tpl). After successful bootstrapping, you will need to delete this file to prevent bootstrapping if node 0 is replaced. If the file is present and node 0 is replaced, it will not be able to rejoin the cluster because it will attempt to bootstrap a new cluster.
+
+If you modify the template and need to modify only one of the instance groups, use the `-target` option. Below is an example for updating only the master instance.
+
+```
+terraform plan -target=google_compute_instance_template.mariadb[0]
+-target=google_compute_instance_group_manager.mariadb[0]
+```
 
 
 ### Generating SSL Keys and Certificates
